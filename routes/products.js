@@ -6,9 +6,9 @@ const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('mysql://root:Cielitolindo1.@localhost:3306/delilahdb');
 
-router.get("/", (req, res) => {
-    res.json({ Mensaje: "hola productos" });
-});
+// router.get("/", (req, res) => {
+//     res.json({ Mensaje: "hola productos" });
+// });
 
 router.post("/", (req, res) => {
     res.json({ Mensaje: "hola productos" });
@@ -23,14 +23,13 @@ router.post("/", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-    res.json({ Mensaje: "hola productos" });
     sequelize.authenticate().then(async () => {
         const query = 'SELECT * FROM users';
         const results = await sequelize.query(query, { raw: true });
-        const resultsjson = res.json(results);
-        console.log(resultsjson);
+        res.json(results);
     });
 });
+
 
 
 
