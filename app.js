@@ -1,15 +1,26 @@
 const express = require('express');
 const app = express();
+var router = express.Router();
 
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const Sequelize = require('sequelize');
+const sequelizeConnection = new Sequelize('mysql://root:Cielitolindo1.@localhost:3306/delilahdb');
 
 
 var productosRouter = require("./routes/products");
 var usuariosRouter = require("./routes/users");
 var pedidosRouter = require("./routes/orders");
+
+const UserController = require("./routes/UserController");
+
+router.route('/personas').get((req, res) => {
+    console.log('Hola')
+    const controller = new UserController(sequelizeConnection);
+
+    controller.getUsers(req, res);
+});
 
 app.use("/products", productosRouter);
 app.use("/users", usuariosRouter);

@@ -5,7 +5,7 @@ module.exports = router;
 
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('mysql://root:Cielitolindo1.@localhost:3306/delilahdb');
+const sequelize = null; //new Sequelize('mysql://root:Cielitolindo1.@localhost:3306/delilahdb');
 
 
 
@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
         const query = 'SELECT * FROM users';
         const results = await sequelize.query(query, { raw: true });
         //console.log(results);
-        res.json(results[0]);
+        res.json(results);
     } catch (e) {
         return res.status(404).json(`something went wrong: ${e}`);
     }
