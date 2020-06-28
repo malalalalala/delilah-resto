@@ -1,8 +1,6 @@
 const router = require("express").Router();
 
 
-
-
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('mysql://root:Cielitolindo1.@localhost:3306/delilahdb');
@@ -88,7 +86,7 @@ router.get("/", async (req, res) => {
 
 router.put("/", async (req, res) => {
     const query = `UPDATE users set full_name='${req.body.fullName}',phone='${req.body.phone}',delivery_address='${req.body.deliveryAddress}',password='${req.body.password}' 
-        where email = '${req.body.email}' AND user = '${req.body.user}' `;
+        where email = '${req.body.id} `;
     console.log(query);
     try {
         const results = await sequelize.query(query, { type: sequelize.QueryTypes.BULKUPDATE });
