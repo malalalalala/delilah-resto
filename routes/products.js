@@ -6,7 +6,9 @@ const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('mysql://root:Cielitolindo1.@localhost:3306/delilahdb');
 
-router.get('/', (req, res) => {
+const validations = require("../middlewares/middlewares");
+
+router.get('/', validations.validateToken, (req, res) => {
     try {
         sequelize.query('SELECT * FROM products', {
             type: sequelize.QueryTypes.SELECT
@@ -20,7 +22,7 @@ router.get('/', (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', validations.validateToken, async (req, res) => {
 
     const query = `INSERT INTO products (name,url_image,price) VALUES ('${req.body.name}','${req.body.url_image}',${req.body.price})`
     try {
@@ -37,7 +39,7 @@ router.post('/', async (req, res) => {
 
 
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", validations.validateToken, async (req, res) => {
     const query = `UPDATE products set name='${req.body.name}',url_image='${req.body.url_image}',price='${req.body.price}' where id=${req.params.id}`;
     console.log(query);
     try {
@@ -53,7 +55,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validations.validateToken, async (req, res) => {
 
     const query = `DELETE from products where id=${req.params.id}`;
     console.log(query);
