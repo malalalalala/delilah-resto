@@ -12,6 +12,39 @@ const jwt = require("jsonwebtoken");
 
 // Middlewares
 const validations = require('../middlewares/middlewares');
+const { col } = require("sequelize");
+
+// router.post("/create", async (req, res) => {
+//     try {
+//         console.log(req.body);
+//         const userDB = await createUser(req, res).then(((value) => {
+//             const roleUser = registerUserRole(value, 2); //2 regular user role
+//             res.json({ user: value, rol: roleUser });
+//         })); //
+
+//     }
+//     catch (e) {
+//         console.error(e);
+//         res.status(404).json({ error: 'user or email already exists' });
+//     }
+// });
+
+async function registerUserRole(idUser, idRol) {
+
+    const query = `INSERT INTO USER_ROLES (user_id,role_id) 
+         VALUES ('${idUser[0]}','${idRol}')`;
+    try {
+        const result = await sequelize.query(query);
+        console.log(result);
+
+        return "user successfully added ";
+    }
+    catch (e) {
+        return (`Something went wrong: ${e}`);
+
+        //throw e;
+    }
+};
 
 router.post('/register', async (req, res) => {
     try {
@@ -22,11 +55,21 @@ router.post('/register', async (req, res) => {
             })
             console.log("result");
             if (result.length > 0) {
-                res.status(400).json("user already exists");
+                res.status(400).json("user or email already exists");
             } else {
                 req.body.password = bcrypt.hashSync(req.body.password, 10);
                 sequelize.query(`INSERT INTO users (user,full_name,email,phone,delivery_address,password)  VALUES ('${req.body.user}','${req.body.full_name}','${req.body.email}','${req.body.phone}','${req.body.delivery_address}','${req.body.password}')`, { type: sequelize.QueryTypes.INSERT })
-                    .then(() => res.status(200).json("user successfully added"))
+                    .then((value) => {
+                        console.log(value);
+                        const roleUser = registerUserRole(value, 2).then(((value) => {
+                            res.json({ user: value, rol: roleUser });
+                            //res.status(200).json("user successfully added");
+                        }));
+                    });
+
+
+
+
             }
         } else {
             return res.status(400).json("Missing data");
@@ -51,15 +94,15 @@ router.post('/login', validations.validateUserPass, async (req, res) => {
                     const token = jwt.sign({ id }, SAFE_KEYWORD);// 
                     res.json({ token })
                 } else {
-                    res.status(400).json({ error: "La contraseña es incorrecta" });
+                    res.status(400).json({ error: "wrong password" });
                 }
             } else
-                res.status(400).json({ error: "El usuario no existe" });
+                res.status(400).json({ error: "user not registered" });
         } else {
-            return res.status(400).json("Datos érroneos para hacer el login");
+            return res.status(400).json("wrong credentials");
         }
     } catch (err) {
-        return res.status(404).json(`Ocurrió un error: ${err}`);
+        return res.status(404).json(`something went wrong: ${err}`);
     }
 });
 
@@ -95,20 +138,7 @@ router.post('/login', validations.validateUserPass, async (req, res) => {
 // });
 
 
-// router.post("/create", async (req, res) => {
-//     try {
-//         console.log(req.body);
-//         const userDB = await createUser(req, res).then(((value) => {
-//             const roleUser = registerUserRole(value, 2); //2 regular user role
-//             res.json({ user: value, rol: roleUser });
-//         })); //
 
-//     }
-//     catch (e) {
-//         console.error(e);
-//         res.status(404).json({ error: 'user or email already exists' });
-//     }
-// });
 
 
 
@@ -128,22 +158,7 @@ router.post('/login', validations.validateUserPass, async (req, res) => {
 //         throw e;
 //     }
 // };
-// async function registerUserRole(idUser, idRol) {
 
-//     const query = `INSERT INTO USER_ROLES (user_id,role_id) 
-//         VALUES ('${idUser[0]}','${idRol}')`;
-//     try {
-//         const result = await sequelize.query(query).catch(console.log("paila"));
-//         console.log(result);
-//         //res.json({ Mensaje: 'user successfully added' });
-//         return result;
-//     }
-//     catch (e) {
-//         console.error(e);
-//         //res.status(404).json({ error: 'user or email already exists' });
-//         throw e;
-//     }
-// };
 
 // router.get("/", async (req, res) => {
 //     try {
