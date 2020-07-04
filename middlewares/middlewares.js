@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Sequelize = require('sequelize');
+const atob = require('atob');
+const bodyParser = require('body-parser');
 
 const sequelize = new Sequelize('mysql://root:Cielitolindo1.@localhost:3306/delilahdb');
 // USERS validations, Authentication
@@ -43,19 +45,93 @@ const validateToken = async (req, res, next) => {
     try {
         const SAFE_KEYWORD = 'MyS3cr3t';
         const token = req.header("auth-token");
+        var base64 = token.split('.')[1];
+        var decodedValue = JSON.parse(atob(base64));
+        console.log('role');
+        console.log(decodedValue);
 
-        if (!token) return res.status(401).json({ error: "Acceso denegado." });
+        if (!token) return res.status(401).json({ error: "Access denied" });
 
         const verify = jwt.verify(token, SAFE_KEYWORD);
+
+        console.log(verify);
         req.body.idUser = verify.id;
+        console.log(verify.role)
         console.log(verify);
         next();
     } catch (error) {
-        res.status(401).json({ error: "Acceso denegado." });
+
+        console.log(error);
+        res.status(401).json({ error: "access denied" });
     }
 };
 
-module.exports = { validateUserPass, validateToken };
+
+
+const validateTokenRole = function (role) {
+    return async (req, res, next) => {
+        try {
+            const SAFE_KEYWORD = 'MyS3cr3t';
+            const token = req.header("auth-token");
+            var base64 = token.split('.')[1];
+            var decodedValue = JSON.parse(atob(base64));
+            console.log('role');
+            console.log(decodedValue);
+
+
+            if (!token) return res.status(401).json({ error: "Access Denied" });
+
+
+            if (Array.isArray(role)) {
+                //console.log("es un arreglo")
+                let hasRole = false;
+                for (let val of role) {
+                    if (val == decodedValue.role) {
+                        hasRole = true;
+                    }
+                }
+                if (!hasRole) return res.status(401).json({ error: "Access Denied" });
+
+            } else {
+                //console.log("no es un arreglo")
+                console.log(role);
+                console.log(decodedValue.role);
+
+                if (decodedValue.role != role) return res.status(401).json({ error: "Acceso denegado." });
+            };
+
+
+
+            const verify = jwt.verify(token, SAFE_KEYWORD);
+
+            req.body.idUser = verify.id;
+
+            console.log('holaaaaaa');
+            console.log(verify);
+            next();
+        } catch (error) {
+            res.status(401).json({ error: "Acceso denegado." });
+        }
+    }
+};
+
+
+function validarAdmin(req, res, next) {
+    const token = req.headers.authorization;
+    if (!token) {
+        res.status(401).json("Primero debes iniciar sesión");
+    } else {
+        const verificado = jwt.verify(token, passwordJwt);
+        let usuario = verificado.usuario_token;
+        if (usuario.admin == 1) {
+            return next();
+        } else {
+            res.status(403).json("Acceso denegado. Sólo administradores");
+        }
+    }
+}
+
+module.exports = { validateUserPass, validateToken, validateTokenRole };
 
 
 // const jwt = require('jsonwebtoken');
@@ -81,3 +157,4 @@ module.exports = { validateUserPass, validateToken };
 // }
 
 // module.exports = { validateIdPath, userAuthentication };
+

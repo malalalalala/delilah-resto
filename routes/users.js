@@ -10,6 +10,8 @@ const bcrypt = require('bcrypt');
 
 const jwt = require("jsonwebtoken");
 
+const atob = require('atob');
+
 // Middlewares
 const validations = require('../middlewares/middlewares');
 const { col } = require("sequelize");
@@ -40,7 +42,7 @@ async function registerUserRole(idUser, idRol) {
         return "user successfully added ";
     }
     catch (e) {
-        return (`Something went wrong: ${e}`);
+        return `Something went wrong: ${e}`;
 
         //throw e;
     }
@@ -79,20 +81,26 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', validations.validateUserPass, async (req, res) => {
+router.post('/login', async (req, res) => {
     try {
         if ((req.body.user || req.body.email) && req.body.password) {
             const { email, user } = req.body;
-            let resultUser = await sequelize.query(`SELECT id,password FROM users WHERE email = '${email}' OR user = '${user}'`,
-                { type: sequelize.QueryTypes.SELECT })
+            let resultUser = await sequelize.query(`select r.name role, user.user_id , user.password pass from roles r , (SELECT  ur.role_id, u.id user_id, u.password password   
+                FROM users u INNER JOIN user_roles ur
+                on u.id=ur.user_id and ( u.email = '${email}' OR u.user = '${user}') ) user
+                              where id = user.role_id`,
+                { type: sequelize.QueryTypes.SELECT });
             if (resultUser[0]) {
-                const { id, password } = resultUser[0];
-                let hpass = await bcrypt.compare(req.body.password, password)
+                const { user_id, pass, role } = resultUser[0];
+                let hpass = await bcrypt.compare(req.body.password, pass)
                     .then(result => result)
                     .catch(() => res.status(400).json("authentication error"));
                 if (hpass) {
-                    const token = jwt.sign({ id }, SAFE_KEYWORD);// 
-                    res.json({ token })
+                    const token = jwt.sign({ user: user_id, role: role }, SAFE_KEYWORD);
+                    res.json({ token });
+                    // var base64 = token.split('.')[1];
+                    // var decodedValue = JSON.parse(atob(base64));
+                    // console.log(decodedValue);
                 } else {
                     res.status(400).json({ error: "wrong password" });
                 }
@@ -203,4 +211,6 @@ router.post('/login', validations.validateUserPass, async (req, res) => {
 // });
 
 module.exports = router;
+
+
 
