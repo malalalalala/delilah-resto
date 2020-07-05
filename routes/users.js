@@ -10,26 +10,8 @@ const bcrypt = require('bcrypt');
 
 const jwt = require("jsonwebtoken");
 
-const atob = require('atob');
-
-// Middlewares
 const validations = require('../middlewares/middlewares');
-const { col } = require("sequelize");
 
-// router.post("/create", async (req, res) => {
-//     try {
-//         console.log(req.body);
-//         const userDB = await createUser(req, res).then(((value) => {
-//             const roleUser = registerUserRole(value, 2); //2 regular user role
-//             res.json({ user: value, rol: roleUser });
-//         })); //
-
-//     }
-//     catch (e) {
-//         console.error(e);
-//         res.status(404).json({ error: 'user or email already exists' });
-//     }
-// });
 
 async function registerUserRole(idUser, idRol) {
 
@@ -43,15 +25,13 @@ async function registerUserRole(idUser, idRol) {
     }
     catch (e) {
         return `Something went wrong: ${e}`;
-
-        //throw e;
     }
 };
 
 router.post('/register', async (req, res) => {
     try {
-        console.log("I'm in")
-        if ((req.body.email || req.body.user) && req.body.password) {
+        //console.log("I'm in")
+        if ((req.body.email && req.body.user) && req.body.password && req.body.full_name && req.body.phone && req.body.delivery_address && req.body.password) {
             const result = await sequelize.query(`SELECT * FROM users WHERE user = '${req.body.user}' or email='${req.body.email}'`, {
                 type: sequelize.QueryTypes.SELECT
             })
@@ -62,22 +42,18 @@ router.post('/register', async (req, res) => {
                 req.body.password = bcrypt.hashSync(req.body.password, 10);
                 sequelize.query(`INSERT INTO users (user,full_name,email,phone,delivery_address,password)  VALUES ('${req.body.user}','${req.body.full_name}','${req.body.email}','${req.body.phone}','${req.body.delivery_address}','${req.body.password}')`, { type: sequelize.QueryTypes.INSERT })
                     .then((value) => {
-                        console.log(value);
+                        //console.log(value);
                         const roleUser = registerUserRole(value, 2).then(((value) => {
                             res.json({ user: value, rol: roleUser });
                             //res.status(200).json("user successfully added");
                         }));
                     });
-
-
-
-
             }
         } else {
-            return res.status(400).json("Missing data");
+            return res.status(400).json({ error: `missing data` });
         }
     } catch (err) {
-        return res.status(404).json(`Something went wrong: ${err}`);
+        return res.status(404).json({ error: `something went wrong: ${err}` });
     }
 });
 
@@ -98,117 +74,19 @@ router.post('/login', async (req, res) => {
                 if (hpass) {
                     const token = jwt.sign({ user: user_id, role: role }, SAFE_KEYWORD);
                     res.json({ token });
-                    // var base64 = token.split('.')[1];
-                    // var decodedValue = JSON.parse(atob(base64));
-                    // console.log(decodedValue);
                 } else {
-                    res.status(400).json({ error: "wrong password" });
+                    res.status(400).json({ error: "wrong credentials" });
                 }
             } else
                 res.status(400).json({ error: "user not registered" });
         } else {
-            return res.status(400).json("wrong credentials");
+            return res.status(400).json({ error: "wrong credentials" });
         }
     } catch (err) {
-        return res.status(404).json(`something went wrong: ${err}`);
+        return res.status(404).json({ error: `something went wrong: ${err}` });
     }
 });
 
-// router.get('/', userAuthentication, (req, res) => {
-//     try {
-//         if (req.usuario.is_admin) {
-//             sequelize.query('SELECT * FROM users', {
-//                 type: sequelize.QueryTypes.SELECT
-//             })
-//                 .then(result => res.status(200).json(result))
-//                 .catch(() => res.status(400).json("Aún no existen usuarios registrados"))
-//         } else {
-//             res.status(403).json("Usuario no autorizado");
-//         }
-//     } catch (err) {
-//         return res.status(404).json(`Ocurrió un error: ${err}`);
-//     }
-// });
-
-// router.post("/", async (req, res) => {
-//     console.log(req.body);
-//     const query = `INSERT INTO users (user,full_name,email,phone,delivery_address,password) 
-//         VALUES ('${req.body.user}','${req.body.fullName}','${req.body.email}','${req.body.phone}','${req.body.deliveryAddress}','${req.body.password}')`;
-//     try {
-//         const results = await sequelize.query(query);
-//         console.log(results);
-//         res.json({ Mensaje: 'user successfully added' });
-//     }
-//     catch (e) {
-//         console.error(e);
-//         res.status(404).json({ error: 'user or email already exists' });
-//     }
-// });
-
-
-
-
-
-
-// async function createUser(req, res) {
-//     console.log(req.body);
-//     const query = `INSERT INTO users (user,full_name,email,phone,delivery_address,password) 
-//         VALUES ('${req.body.user}','${req.body.fullName}','${req.body.email}','${req.body.phone}','${req.body.deliveryAddress}','${req.body.password}')`;
-//     try {
-//         const result = await sequelize.query(query, { type: sequelize.QueryTypes.INSERT });
-//         console.log(result);
-//         //res.json({ Mensaje: 'user successfully added' });
-//         return result;
-//     }
-//     catch (e) {
-//         // console.error(e);
-//         //res.status(404).json({ error: 'user or email already exists' });
-//         throw e;
-//     }
-// };
-
-
-// router.get("/", async (req, res) => {
-//     try {
-//         const query = 'SELECT id,user,full_name fullName,email,phone,delivery_address deliveryAddress,password FROM users';
-//         const results = await sequelize.query(query, { type: sequelize.QueryTypes.SELECT });
-//         //console.log(results);
-//         res.json(results);
-//     } catch (e) {
-//         return res.status(404).json(`something went wrong: ${e}`);
-//     }
-// });
-
-// router.put("/", async (req, res) => {
-//     const query = `UPDATE users set full_name='${req.body.fullName}',phone='${req.body.phone}',delivery_address='${req.body.deliveryAddress}',password='${req.body.password}' 
-//         where email = '${req.body.email}' AND user = '${req.body.user}' `;
-//     console.log(query);
-//     try {
-//         const results = await sequelize.query(query, { type: sequelize.QueryTypes.BULKUPDATE });
-//         res.json(results);
-//     }
-//     catch (e) {
-//         console.error(e);
-//         return res.status(404).json(`invalid update: ${e}`);
-
-//     }
-// });
-
-
-// router.delete("/", async (req, res) => {
-//     const query = `DELETE  users
-//         where email = '${req.body.email}' AND user = '${req.body.user}' `;
-//     console.log(query);
-//     try {
-//         const results = await sequelize.query(query, { type: sequelize.QueryTypes.DELETE });
-//         res.json({ status: 'deleted' });
-
-//     }
-//     catch (e) {
-//         console.error(e);
-//         res.status(404).json({ error: 'something went wrong' });
-//     }
-// });
 
 module.exports = router;
 

@@ -8,17 +8,17 @@ const Sequelize = require('sequelize');
 
 
 
-var productosRouter = require("./routes/products");
-var usuariosRouter = require("./routes/users");
-var pedidosRouter = require("./routes/orders");
+var productsRouter = require("./routes/products");
+var usersRouter = require("./routes/users");
+var ordersRouter = require("./routes/orders");
 
-app.use("/products", productosRouter);
-app.use("/users", usuariosRouter);
-app.use("/orders", pedidosRouter);
+app.use("/products", productsRouter);
+app.use("/users", usersRouter);
+app.use("/orders", ordersRouter);
 
 
 app.listen(3000, () => {
-    console.log(`Server iniciado en http://127.0.0.1:3000`);
+    console.log(`Server started in http://127.0.0.1:3000`);
 });
 
 
