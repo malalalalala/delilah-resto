@@ -37,14 +37,15 @@ router.post('/register', async (req, res) => {
             })
             console.log("result");
             if (result.length > 0) {
-                res.status(400).json("user or email already exists");
+                res.status(400).json({ error: `user or email already exists ${err}` });
             } else {
                 req.body.password = bcrypt.hashSync(req.body.password, 10);
                 sequelize.query(`INSERT INTO users (user,full_name,email,phone,delivery_address,password)  VALUES ('${req.body.user}','${req.body.full_name}','${req.body.email}','${req.body.phone}','${req.body.delivery_address}','${req.body.password}')`, { type: sequelize.QueryTypes.INSERT })
                     .then((value) => {
                         //console.log(value);
                         const roleUser = registerUserRole(value, 2).then(((value) => {
-                            res.json({ user: value, rol: roleUser });
+                            res.status(200).json({ user: value, rol: roleUser });
+
                             //res.status(200).json("user successfully added");
                         }));
                     });

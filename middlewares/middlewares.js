@@ -13,8 +13,10 @@ const validateTokenRole = function (role) {
             const token = req.header("auth-token");
             var base64 = token.split('.')[1];
             var decodedValue = JSON.parse(atob(base64));
-            //console.log('role');
-            //console.log(decodedValue);
+            console.log(role);
+            //console.log(user);
+            console.log(decodedValue);
+            console.log(decodedValue.user);
             if (!token) return res.status(401).json({ error: "Access Denied" });
             if (Array.isArray(role)) {
                 //console.log("es un arreglo")
@@ -32,6 +34,7 @@ const validateTokenRole = function (role) {
             };
             const verify = jwt.verify(token, SAFE_KEYWORD);
             req.body.idUser = verify.id;
+            console.log(req.body.idUser);
             //console.log(verify);
             next();
         } catch (error) {
@@ -41,8 +44,35 @@ const validateTokenRole = function (role) {
 };
 
 
+const checkIfUser = (req, res, next) => {
+    try {
+        const SAFE_KEYWORD = 'MyS3cr3t';
+        const token = req.header("auth-token");
+        var base64 = token.split('.')[1];
+        var decodedValue = JSON.parse(atob(base64));
 
-module.exports = { validateTokenRole };
+        console.log(decodedValue.user);
+        if (!token) { return res.status(401).json({ error: "Access Denied" }) }
+
+
+        else {
+            if (decodedValue.user != req.params.id) {
+                return res.status(404).json({ error: `Access Denied` })
+
+            }
+        }
+        const verify = jwt.verify(token, SAFE_KEYWORD);
+        req.body.idUser = verify.id;
+        console.log("salí de aquí");
+        next();
+
+    } catch (error) {
+        return res.status(404).json({ error: `Something went wrong: ${error}` });
+    };
+
+}
+
+module.exports = { validateTokenRole, checkIfUser };
 
 
 
