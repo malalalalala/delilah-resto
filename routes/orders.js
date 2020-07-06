@@ -91,51 +91,6 @@ router.get("/user/:id", validations.checkIfUser, (req, res) => {
 })
 
 
-// router.get("/user/:id", validations.checkIfUser, async (res, req) => {
-//     console.log("llegué aquí2")
-//     try {
-//         console.log("por aquí3")
-//         const result = await sequelize.query(`SELECT * FROM orders WHERE id=${req.params.id}`, {
-//             type: sequelize.QueryTypes.SELECT
-//         })
-//         if (result.length > 0) {
-//             console.log("por aquí4")
-//             await sequelize.query(`SELECT o.id, total_amount,payment_id,date_order,status_id,user_id,os.name AS status_name,user,full_name,email,phone,delivery_address,password,pm.name AS payment_name
-//              FROM orders AS o
-//              JOIN order_status AS os
-//                  ON o.status_id=os.id
-//              JOIN users AS u
-//                  ON o.user_id=u.id
-//              JOIN payment_methods AS pm
-//                  ON o.payment_id=pm.id
-//              WHERE user_id=${req.params.id}`).then((result) => {
-
-//                 let upperIndex;
-//                 console.log(result);
-//                 result.forEach((element, index) => {
-//                     console.log(index);
-//                     upperIndex = index;
-//                     sequelize.query(`SELECT order_id,product_id,quantity FROM product_order WHERE order_id=${result[index].id}`, {
-//                         type: sequelize.QueryTypes.SELECT
-//                     }).then((result2) => {
-//                         console.log(result2);
-//                         console.log(result[index]);
-//                         result[index].products = result2;
-//                     });
-//                 });
-//                 return res.status(200).json(result)
-//             })
-
-
-//         } else {
-//             return res.status(404).json({ error: `Access Denied: ${err}` });
-//         }
-//     } catch (err) {
-//         return `Something went wrong: ${err}`
-
-//     }
-// });
-
 
 
 
@@ -170,18 +125,46 @@ router.put("/:id/status", validations.validateTokenRole(['admin']), (req, res) =
     }
 });
 
-// router.post("/", validations.validateTokenRole(['admin', 'user']), (req, res) => {
-//     try {
-//         if (req.body) {
-//             const { product_id, paidType_order, address_order, id_user } = req.body
 
-//         } else {
+router.post("/", validations.validateTokenRole(['admin', 'user']), (req, res) => {
+    try {
+        const { product_id, quantity, payment_id, delivery_address, user_id, status_id } = req.body;
 
-//         }
+        if (product_id && quantity && payment_id && delivery_address && user_id) {
 
-//     } catch (err) {
+            let idOrder = null;
 
-//         return res.status(404).json({ error: `Something went wrong: ${err}` });
+            const query = `INSERT INTO orders (total_amount,payment_id,
+                status_id,user_id) VALUES ('${0}','${payment_id}','${status_id}','${user_id}')`;
 
-//     }
-// })
+            sequelize.query(query, { type: sequelize.QueryTypes.INSERT })
+                .then((result) => {
+                    idOrder = result[0];
+                    const query2 = `INSERT INTO product_order (order_id,product_id,
+                            quantity) VALUES ('${idOrder}','${product_id}','${quantity}')`;
+                    sequelize.query(query2, { type: sequelize.QueryTypes.INSERT })
+
+                        .then((result2) => {
+
+                            const price = `SELECT price FROM products WHERE id = ${product_id}`;
+                            sequelize.query(price, { type: sequelize.QueryTypes.SELECT });
+
+                            let totalAmount = product_order.quantity * products.price;
+
+                            console.log(totalAmount);
+
+                        });
+
+                });
+        } else {
+
+            return res.status(400).json({ error: `Missing order information` })
+
+        }
+
+    } catch (err) {
+
+        return res.status(404).json({ error: `Something went wrong: ${err}` });
+
+    }
+})
