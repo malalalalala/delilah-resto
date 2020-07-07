@@ -63,7 +63,7 @@ const checkIfUser = (req, res, next) => {
         }
         const verify = jwt.verify(token, SAFE_KEYWORD);
         req.body.idUser = verify.id;
-        console.log("salí de aquí");
+
         next();
 
     } catch (error) {

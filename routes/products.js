@@ -86,7 +86,7 @@ router.delete("/:id", validations.validateTokenRole(['admin']), async (req, res)
     }
     catch (error) {
 
-        return res.status(404).json({ error: `Invalid update: ${error}` });
+        return res.status(404).json({ error: `Invalid deletion: ${error}` });
 
     }
 });

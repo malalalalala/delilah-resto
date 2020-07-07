@@ -128,43 +128,92 @@ router.put("/:id/status", validations.validateTokenRole(['admin']), (req, res) =
 
 router.post("/", validations.validateTokenRole(['admin', 'user']), (req, res) => {
     try {
-        const { product_id, quantity, payment_id, delivery_address, user_id, status_id } = req.body;
+        const { products, payment_id, delivery_address, user_id, status_id } = req.body;
 
-        if (product_id && quantity && payment_id && delivery_address && user_id) {
+        console.log(req.body);
+        console.log(products);
 
-            let idOrder = null;
+        if (products && payment_id && delivery_address && user_id) {
+            //Recorrer
 
-            const query = `INSERT INTO orders (total_amount,payment_id,
-                status_id,user_id) VALUES ('${0}','${payment_id}','${status_id}','${user_id}')`;
+            let queriesProcList = [];
+            let totalAmount = 0;
+            products.forEach(
+                prod => {
+                    const priceQry = `SELECT price FROM products WHERE id = ${prod.product_id}`;
+                    let queryProcess = sequelize.query(priceQry, { type: sequelize.QueryTypes.SELECT }).then((result) => {
+                        prod.price = result[0].price;
+                        totalAmount += prod.quantity * prod.price;
+                        console.log(prod);
+                    });
+                    queriesProcList.push(queryProcess);
+                });
 
-            sequelize.query(query, { type: sequelize.QueryTypes.INSERT })
-                .then((result) => {
-                    idOrder = result[0];
-                    const query2 = `INSERT INTO product_order (order_id,product_id,
-                            quantity) VALUES ('${idOrder}','${product_id}','${quantity}')`;
-                    sequelize.query(query2, { type: sequelize.QueryTypes.INSERT })
 
-                        .then((result2) => {
+            Promise.all(queriesProcList).then(values => {
 
-                            const price = `SELECT price FROM products WHERE id = ${product_id}`;
-                            sequelize.query(price, { type: sequelize.QueryTypes.SELECT });
+                console.log(totalAmount);
+                let idOrder;
+                const query = `INSERT INTO orders (total_amount,payment_id,
+                     status_id,user_id) VALUES (${totalAmount},${payment_id},${status_id},${user_id})`;
 
-                            let totalAmount = product_order.quantity * products.price;
+                let insertOrderPromise = sequelize.query(query, { type: sequelize.QueryTypes.INSERT })
+                    .then((result) => {
+                        idOrder = result[0];
+                    });
 
-                            console.log(totalAmount);
+                Promise.all([insertOrderPromise]).then(values => {
 
+                    let insertsProcList = [];
+                    products.forEach(
+                        prod => {
+                            const insertStatement = `INSERT INTO product_order (order_id,product_id,
+                            quantity) VALUES (${idOrder},${prod.product_id},${prod.quantity})`;
+                            let queryProcess = sequelize.query(insertStatement, { type: sequelize.QueryTypes.INSERT });
+                            insertsProcList.push(queryProcess);
                         });
 
+                    Promise.all(insertsProcList).then(values => {
+                        console.log("PROCESS DONE");
+                        res.status(200).json("order successfully created");
+
+                    });
+
                 });
-        } else {
-
-            return res.status(400).json({ error: `Missing order information` })
-
+            });
         }
+
 
     } catch (err) {
 
         return res.status(404).json({ error: `Something went wrong: ${err}` });
 
     }
+
 })
+
+router.delete("/:id", validations.validateTokenRole(['admin']), (req, res) => {
+    try {
+        const result = sequelize.query(`SELECT * FROM orders WHERE id=${req.params.id}`, {
+            type: sequelize.QueryTypes.SELECT
+        }).then((result) => {
+            if (result.length > 0) {
+                const query = `DELETE from product_order where order_id=${req.params.id}`;
+                sequelize.query(query, { type: sequelize.QueryTypes.DELETE })
+                    .then((results) => {
+                        sequelize.query(`DELETE from orders where id=${req.params.id}`, {
+                            type: sequelize.QueryTypes.DELETE
+                        }).then((results) => {
+                            return res.status(200).json("order successfully deleted");
+                        });
+                    });
+            }
+            else {
+                return res.status(400).json({ error: `Invalid id:${req.params.id}` })
+            }
+        });
+    }
+    catch (error) {
+        return res.status(404).json({ error: `Invalid delition: ${error}` });
+    }
+});
