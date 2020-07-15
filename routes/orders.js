@@ -127,6 +127,7 @@ router.put("/:id/status", validations.validateTokenRole(['admin']), (req, res) =
 
 
 router.post("/", validations.validateTokenRole(['admin', 'user']), (req, res) => {
+    let errors = [];
     try {
         const { products, payment_id, delivery_address, user_id, status_id } = req.body;
 
@@ -142,15 +143,29 @@ router.post("/", validations.validateTokenRole(['admin', 'user']), (req, res) =>
                 prod => {
                     const priceQry = `SELECT price FROM products WHERE id = ${prod.product_id}`;
                     let queryProcess = sequelize.query(priceQry, { type: sequelize.QueryTypes.SELECT }).then((result) => {
-                        prod.price = result[0].price;
-                        totalAmount += prod.quantity * prod.price;
-                        console.log(prod);
+                        if (result[0]) {
+                            prod.price = result[0].price;
+                            totalAmount += prod.quantity * prod.price;
+                            console.log(prod);
+                        }
+
+                        else {
+                            errors.push(`Product not found = ${prod.product_id}`);
+                        }
                     });
                     queriesProcList.push(queryProcess);
                 });
 
 
             Promise.all(queriesProcList).then(values => {
+
+                if (errors.length > 0) {
+                    res.status(200).json(errors);
+
+                    return;
+                }
+
+
 
                 console.log(totalAmount);
                 let idOrder;
@@ -160,6 +175,8 @@ router.post("/", validations.validateTokenRole(['admin', 'user']), (req, res) =>
                 let insertOrderPromise = sequelize.query(query, { type: sequelize.QueryTypes.INSERT })
                     .then((result) => {
                         idOrder = result[0];
+                    }).catch(() => {
+                        res.status(400).json({ error: `Something went wrong: ${err}` })
                     });
 
                 Promise.all([insertOrderPromise]).then(values => {
@@ -177,6 +194,8 @@ router.post("/", validations.validateTokenRole(['admin', 'user']), (req, res) =>
                         console.log("PROCESS DONE");
                         res.status(200).json("order successfully created");
 
+                    }).catch(() => {
+                        res.status(400).json({ error: `Something went wrong: ${err}` })
                     });
 
                 });

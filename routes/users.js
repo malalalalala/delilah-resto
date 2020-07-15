@@ -37,7 +37,7 @@ router.post('/register', async (req, res) => {
             })
             console.log("result");
             if (result.length > 0) {
-                res.status(400).json({ error: `user or email already exists ${err}` });
+                res.status(400).json({ error: `user or email already exists ` });
             } else {
                 req.body.password = bcrypt.hashSync(req.body.password, 10);
                 sequelize.query(`INSERT INTO users (user,full_name,email,phone,delivery_address,password)  VALUES ('${req.body.user}','${req.body.full_name}','${req.body.email}','${req.body.phone}','${req.body.delivery_address}','${req.body.password}')`, { type: sequelize.QueryTypes.INSERT })
@@ -54,7 +54,7 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: `missing data` });
         }
     } catch (err) {
-        return res.status(404).json({ error: `something went wrong: ${err}` });
+        return res.status(404).json({ error: `user or email already exists ${err}` });
     }
 });
 
@@ -79,12 +79,26 @@ router.post('/login', async (req, res) => {
                     res.status(400).json({ error: "wrong credentials" });
                 }
             } else
-                res.status(400).json({ error: "user not registered" });
+                res.status(401).json({ error: "user not registered" });
         } else {
             return res.status(400).json({ error: "wrong credentials" });
         }
     } catch (err) {
-        return res.status(404).json({ error: `something went wrong: ${err}` });
+        return res.status(500).json({ error: `something went wrong: ${err}` });
+    }
+});
+
+router.get('/', validations.validateTokenRole(['admin']), (req, res) => {
+    try {
+        sequelize.query('SELECT * FROM users', {
+            type: sequelize.QueryTypes.SELECT
+        })
+            .then(result => res.status(200).json(result))
+            .catch(() => {
+                if (!result) { res.status(400).json("No users") }
+            })
+    } catch (err) {
+        return res.status(404).json({ error: `Something went wrong: ${err}` });
     }
 });
 

@@ -68,7 +68,7 @@ router.put('/:id', validations.validateTokenRole(['admin']), async (req, res) =>
 });
 
 
-router.delete("/:id", validations.validateTokenRole(['admin']), async (req, res) => {
+router.delete("/delete/:id", validations.validateTokenRole(['admin']), async (req, res) => {
 
     try {
         const result = await sequelize.query(`SELECT * FROM products WHERE id=${req.params.id}`, {
