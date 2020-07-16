@@ -160,7 +160,7 @@ router.post("/", validations.validateTokenRole(['admin', 'user']), (req, res) =>
             Promise.all(queriesProcList).then(values => {
 
                 if (errors.length > 0) {
-                    res.status(200).json(errors);
+                    res.status(400).json(errors);
 
                     return;
                 }
