@@ -10,6 +10,8 @@ This README.md will guide you to install and use this application.
 
 Plese refer to this swagger link https://app.swaggerhub.com/apis/lauramosdim/delilah-resto/1.0.0#/
 
+You can access to the swagger collection through this link https://app.getpostman.com/run-collection/b3c2599d449856e80c70
+
 ## Project Resources
 
 - Node.js
@@ -35,7 +37,7 @@ $ yarn install
 
 ## Set up the data base
 
-Open a new query in mysql and execute the queries in the BDcreation.sql file located in the resources folder. The tables will be empty and you need to insert data in all of them before testing the API.
+Open a new query in mysql and execute the queries in the **BDcreation.sql** file located in the resources folder (https://github.com/lauramosdim/delilah-resto/blob/master/resources/BDcreation.sql). The tables will be empty and you need to insert data in all of them before testing the API.
 
 ## Run the API
 Initialize the Server. 
