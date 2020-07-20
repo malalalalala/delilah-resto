@@ -10,7 +10,8 @@ CREATE TABLE users
     phone VARCHAR(50) NOT NULL,
     delivery_address VARCHAR(255) NOT NULL,
     password VARCHAR(150) NOT NULL,
-    UNIQUE (user, email)
+    UNIQUE (user),
+    UNIQUE (email)
 );
 
 
@@ -59,7 +60,7 @@ CREATE TABLE orders
 	  id INT PRIMARY KEY AUTO_INCREMENT,
     total_amount INT NOT NULL,
     payment_id INT NOT NULL,
-    date_order TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_order DATETIME,
     FOREIGN KEY fk_orders_payment_methods(payment_id)
 		REFERENCES payment_methods(id)
         ON UPDATE NO ACTION,
@@ -69,6 +70,8 @@ CREATE TABLE orders
         ON UPDATE NO ACTION,
 	user_id INT REFERENCES users(id)
    );
+
+ ALTER TABLE orders MODIFY date_order DATETIME DEFAULT   CURRENT_TIMESTAMP;
 
 
 USE delilahDB;
@@ -94,6 +97,9 @@ CREATE TABLE user_roles(
     FOREIGN KEY (role_id) REFERENCES roles(id),
     UNIQUE (user_id, role_id)   
 );
+
+
+
 
 
 
