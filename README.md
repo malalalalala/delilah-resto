@@ -43,24 +43,24 @@ Open a new query in mysql and execute the queries in the **BDcreation.sql** file
 
 Please run the following queries in MySQL, you can find them also in the **Querys** file located in the resources folder.
 
-INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Victoria', 'Victoria Ramos', 'vicky@gmail.com', '1234578', 'cra 56', 'malala');
-INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Socorro', 'Socorro Agudelo', 'socorro@gmail.com', '1234558', 'cra 52', 'malala');
-INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Lasagna', 'www.lasagna.com', '4000');
-INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Pizza', 'www.pizza.com', '2000');
-INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Rissotto', 'www.rissotto.con', '4500');
-INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Lemonade', 'www.lemonade.com', '400');
-INSERT INTO `delilahdb`.`payment_methods` (`name`) VALUES ('Cash');
-INSERT INTO `delilahdb`.`payment_methods` (`name`) VALUES ('Credit Card');
-INSERT INTO `delilahdb`.`roles` (`name`) VALUES ('admin');
-INSERT INTO `delilahdb`.`roles` (`name`) VALUES ('user');
-INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('New');
-INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Confirmed');
-INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('In preparation');
-INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Sent');
-INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Cancelled');
-INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Delivered');
-INSERT INTO `delilahdb`.`user_roles` (`user_id`, `role_id`) VALUES ('1', '1');
-INSERT INTO `delilahdb`.`user_roles` (`user_id`, `role_id`) VALUES ('2', '2');
+INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Victoria', 'Victoria Ramos', 'vicky@gmail.com', '1234578', 'cra 56', 'malala');  
+INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Socorro', 'Socorro Agudelo', 'socorro@gmail.com', '1234558', 'cra 52', 'malala');  
+INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Lasagna', 'www.lasagna.com', '4000');    
+INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Pizza', 'www.pizza.com', '2000');  
+INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Rissotto', 'www.rissotto.con', '4500');  
+INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Lemonade', 'www.lemonade.com', '400');  
+INSERT INTO `delilahdb`.`payment_methods` (`name`) VALUES ('Cash');  
+INSERT INTO `delilahdb`.`payment_methods` (`name`) VALUES ('Credit Card');  
+INSERT INTO `delilahdb`.`roles` (`name`) VALUES ('admin');  
+INSERT INTO `delilahdb`.`roles` (`name`) VALUES ('user');  
+INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('New');  
+INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Confirmed');  
+INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('In preparation');  
+INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Sent');  
+INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Cancelled');  
+INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Delivered');  
+INSERT INTO `delilahdb`.`user_roles` (`user_id`, `role_id`) VALUES ('1', '1');  
+INSERT INTO `delilahdb`.`user_roles` (`user_id`, `role_id`) VALUES ('2', '2');  
 
 To post an order you can do it trough the POST path on the orders tables which you will find in the following instructions. Please use the mentioned example to try the server.
 
