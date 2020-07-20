@@ -62,7 +62,7 @@ INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Delivered');
 INSERT INTO `delilahdb`.`user_roles` (`user_id`, `role_id`) VALUES ('1', '1');  
 INSERT INTO `delilahdb`.`user_roles` (`user_id`, `role_id`) VALUES ('2', '2');  
 
-To post an order you can do it trough the POST path on the orders tables which you will find in the following instructions. Please use the mentioned example to try the server.
+To post an order you can do it trough the POST path on the orders tables which you will find in the following instructions. Please use the mentioned example to try the server. This will update the "product_order" tabled as well.
 
 ## Run the API
 Initialize the Server. 
