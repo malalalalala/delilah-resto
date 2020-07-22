@@ -13,7 +13,11 @@ const jwt = require("jsonwebtoken");
 const validations = require('../middlewares/middlewares');
 
 
-async function registerUserRole(idUser, idRol) {
+async function registerUserRole(idUser, rolName) {
+    var idRol = 2;
+    if (rolName == 'admin') {
+        idRol = 1;
+    }
 
     const query = `INSERT INTO USER_ROLES (user_id,role_id) 
          VALUES ('${idUser[0]}','${idRol}')`;
@@ -39,11 +43,12 @@ router.post('/register', async (req, res) => {
             if (result.length > 0) {
                 res.status(400).json({ error: `user or email already exists ` });
             } else {
-                req.body.password = bcrypt.hashSync(req.body.password, 10);
-                sequelize.query(`INSERT INTO users (user,full_name,email,phone,delivery_address,password)  VALUES ('${req.body.user}','${req.body.full_name}','${req.body.email}','${req.body.phone}','${req.body.delivery_address}','${req.body.password}')`, { type: sequelize.QueryTypes.INSERT })
+                const passEncrypted = bcrypt.hashSync(req.body.password, 10);
+                console.log(passEncrypted);
+                sequelize.query(`INSERT INTO users (user,full_name,email,phone,delivery_address,password)  VALUES ('${req.body.user}','${req.body.full_name}','${req.body.email}','${req.body.phone}','${req.body.delivery_address}','${passEncrypted}')`, { type: sequelize.QueryTypes.INSERT })
                     .then((value) => {
                         //console.log(value);
-                        const roleUser = registerUserRole(value, 2).then(((value) => {
+                        const roleUser = registerUserRole(value, req.body.role).then(((value) => {
                             res.status(200).json({ user: value, rol: roleUser });
 
                             //res.status(200).json("user successfully added");

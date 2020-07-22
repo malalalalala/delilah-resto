@@ -1,13 +1,13 @@
-INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Victoria', 'Victoria Ramos', 'vicky@gmail.com', '1234578', 'cra 56', 'malala');
-INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Socorro', 'Socorro Agudelo', 'socorro@gmail.com', '1234558', 'cra 52', 'malala');
+INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Victoria', 'Victoria Ramos', 'vicky@gmail.com', '1234578', 'cra 56', '$2b$10$ywyWY47DcKEDeRoflZ5WWeEYnkZq5YbKRaOt0ABoaodL1CCsI5JDu');
+INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Socorro', 'Socorro Agudelo', 'socorro@gmail.com', '1234558', 'cra 52', '$2b$10$ywyWY47DcKEDeRoflZ5WWeEYnkZq5YbKRaOt0ABoaodL1CCsI5JDu');
 INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Lasagna', 'www.lasagna.com', '4000');
 INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Pizza', 'www.pizza.com', '2000');
 INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Rissotto', 'www.rissotto.con', '4500');
 INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Lemonade', 'www.lemonade.com', '400');
 INSERT INTO `delilahdb`.`payment_methods` (`name`) VALUES ('Cash');
 INSERT INTO `delilahdb`.`payment_methods` (`name`) VALUES ('Credit Card');
-INSERT INTO `delilahdb`.`roles` (`name`) VALUES ('admin');
-INSERT INTO `delilahdb`.`roles` (`name`) VALUES ('user');
+INSERT INTO `delilahdb`.`roles` (`id`, `name`) VALUES (1,'admin');
+INSERT INTO `delilahdb`.`roles` (`id`, `name`) VALUES (2, 'user');
 INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('New');
 INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Confirmed');
 INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('In preparation');
