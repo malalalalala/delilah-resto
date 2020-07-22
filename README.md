@@ -23,6 +23,7 @@ You can access to the swagger collection through this link https://app.getpostma
 - Body-Parser
 - atob
 
+
 ## Getting Started
 Clone the repo
 $ git clone https://github.com/lauramosdim/delilah-resto.git
@@ -43,8 +44,8 @@ Open a new query in mysql and execute the queries in the **BDcreation.sql** file
 
 Please run the following queries in MySQL, you can find them also in the **Querys** file located in the resources folder.
 
-INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Victoria', 'Victoria Ramos', 'vicky@gmail.com', '1234578', 'cra 56', 'malala');  
-INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Socorro', 'Socorro Agudelo', 'socorro@gmail.com', '1234558', 'cra 52', 'malala');  
+INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Victoria', 'Victoria Ramos', 'vicky@gmail.com', '1234578', 'cra 56', '$2b$10$ywyWY47DcKEDeRoflZ5WWeEYnkZq5YbKRaOt0ABoaodL1CCsI5JDu');  
+INSERT INTO `delilahdb`.`users` (`user`, `full_name`, `email`, `phone`, `delivery_address`, `password`) VALUES ('Socorro', 'Socorro Agudelo', 'socorro@gmail.com', '1234558', 'cra 52', '$2b$10$ywyWY47DcKEDeRoflZ5WWeEYnkZq5YbKRaOt0ABoaodL1CCsI5JDu');  
 INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Lasagna', 'www.lasagna.com', '4000');    
 INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Pizza', 'www.pizza.com', '2000');  
 INSERT INTO `delilahdb`.`products` (`name`, `url_image`, `price`) VALUES ('Rissotto', 'www.rissotto.con', '4500');  
@@ -62,7 +63,7 @@ INSERT INTO `delilahdb`.`order_status` (`name`) VALUES ('Delivered');
 INSERT INTO `delilahdb`.`user_roles` (`user_id`, `role_id`) VALUES ('1', '1');  
 INSERT INTO `delilahdb`.`user_roles` (`user_id`, `role_id`) VALUES ('2', '2');  
 
-To post an order you can do it trough the POST path on the orders tables which you will find in the following instructions. Please use the mentioned example to try the server. This will update the "product_order" tabled as well.
+To post an order you can do it trough the POST path on the orders table which you will find in the following instructions. Please use the mentioned example to try the server. This will update the "product_order" table as well.
 
 ## Run the API
 Initialize the Server. 
@@ -91,27 +92,62 @@ See more in - Middelwares
 
 ### USERS
 
-#### POST - Register a user
+
+#### POST - User login
+
+With the existing users will be:
+
+ http://localhost:3000/users/login
+
+##### Body for user with admin role: 
+
+
+{
+  "user": "Victoria",
+  "password": "malala"
+}
+
+##### Body for user with user role (customer): 
+
+
+{
+  "user": "Socorro",
+  "password": "malala"
+}
+
+
+
+#### POST - Register an user
+
+In order to register an admin user you should provide the role otherwise the user will be regirstered with the user role as the following example:
 
  http://localhost:3000/users/register
+ 
+##### Body for user with user role (customer): 
 
-Body request example: {
-  "user": "Laura",
-  "full_name": "Laura Ramos",
+ {
+  "user": "Victoria",
+  "full_name": "Victoria Ramos",
   "email": "lla@gmail.com",
   "phone": 234,
   "delivery_address": "Cl 42 #78-23",
   "password": "lalalalalaal0"
 }
 
-#### POST - User login
+##### Body for user with admin role: 
 
- http://localhost:3000/users/login
+ http://localhost:3000/users/register
 
 Body request example: {
   "user": "Laura",
-  "password": "lalalala"
+  "full_name": "Laura Ramos",
+  "email": "lau@gmail.com",
+  "phone": 234,
+  "delivery_address": "Cl 42 #78-23",
+  "password": "lalalalalaal0",
+   "role": "admin"
 }
+
 
 #### GET - Get all users
 
