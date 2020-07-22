@@ -159,22 +159,22 @@ http://localhost:3000/products/delete/:product_id
  http://localhost:3000/orders
 
 Body request example: 
-{
-   "products":[
-      {
-         "product_id":1,
-         "quantity":6
-      },
-      {
-         "product_id":2,
-         "quantity":5
-      }
-   ],
-   "payment_id":2,
-   "status_id":2,
-   "user_id":1,
-   "delivery_address":"cra 53 28"
-}
+{  
+   "products":[  
+      {  
+         "product_id":1,  
+         "quantity":6  
+      },  
+      {  
+         "product_id":2,  
+         "quantity":5  
+      }  
+   ],  
+   "payment_id":2,  
+   "status_id":2,  
+   "user_id":1,  
+   "delivery_address":"cra 53 28"  
+}  
 
 #### PUT - Edit a order status
 
