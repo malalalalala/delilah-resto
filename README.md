@@ -102,18 +102,18 @@ With the existing users will be:
 ##### Body for user with admin role: 
 
 
-{
-  "user": "Victoria",
-  "password": "malala"
-}
+{  
+  "user": "Victoria",  
+  "password": "malala"  
+}  
 
 ##### Body for user with user role (customer): 
 
 
-{
-  "user": "Socorro",
-  "password": "malala"
-}
+{  
+  "user": "Socorro",  
+  "password": "malala"  
+}  
 
 
 
@@ -126,27 +126,27 @@ In order to register an admin user you should provide the role otherwise the use
 ##### Body for user with user role (customer): 
 
  {
-  "user": "Victoria",
-  "full_name": "Victoria Ramos",
-  "email": "lla@gmail.com",
-  "phone": 234,
-  "delivery_address": "Cl 42 #78-23",
-  "password": "lalalalalaal0"
+  "user": "Victoria",  
+  "full_name": "Victoria Ramos",  
+  "email": "lla@gmail.com",  
+  "phone": 234,  
+  "delivery_address": "Cl 42 #78-23",  
+  "password": "lalalalalaal0"  
 }
 
 ##### Body for user with admin role: 
 
  http://localhost:3000/users/register
 
-Body request example: {
-  "user": "Laura",
-  "full_name": "Laura Ramos",
-  "email": "lau@gmail.com",
-  "phone": 234,
-  "delivery_address": "Cl 42 #78-23",
-  "password": "lalalalalaal0",
-   "role": "admin"
-}
+Body request example: {  
+  "user": "Laura",  
+  "full_name": "Laura Ramos",  
+  "email": "lau@gmail.com",  
+  "phone": 234,  
+  "delivery_address": "Cl 42 #78-23",  
+  "password": "lalalalalaal0",  
+   "role": "admin"  
+}  
 
 
 #### GET - Get all users
